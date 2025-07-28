@@ -1,0 +1,251 @@
+{% load static %}
+
+{% include 'Seller/Header.html' %}
+
+<br><br><br><br>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <div>
+                    <h4> Payment View </h4>
+                </div>
+            </div>
+            <div class="container-fluid py-3 text-center">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="SelectOption" id="PurchasedOption"
+                        value="Purchased">
+                    <label class="form-check-label" for="PurchasedOption">
+                        <h1>Purchased</h1>
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="SelectOption" id="RentedOption" value="Rented">
+                    <label class="form-check-label" for="RentedOption">
+                        <h1>Rented</h1>
+                    </label>
+                </div>
+            </div>
+            <br>
+            <div>    
+                <h4><a class="btn btn-success" id="exportLink" href="#">Export to Excel</a></h4>
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    let radioButtons = document.querySelectorAll("input[name='SelectOption']");
+                    let exportLink = document.getElementById("exportLink");
+            
+                    radioButtons.forEach(function (radio) {
+                        radio.addEventListener("change", function () {
+                            let selectedValue = document.querySelector("input[name='SelectOption']:checked").value;
+                            exportLink.href = `/Seller/export_excel/${selectedValue}`;
+                        });
+                    });
+                });
+            </script>
+
+
+
+
+        </div>
+        <div class="card-body">
+
+
+            <div class="table-responsive">
+                <table id="add-row" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tools Name</th>
+                            <th>Tools img</th>
+                            <th>Paymount date</th>
+                            <th>Amount</th>
+                            <th>Customer name</th>
+                            <th>Order Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                    </tbody>
+                    <tbody id="Purchased">
+
+                    </tbody>
+                    <tbody id="Rented">
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'Seller/Footer.html' %}
+<!-- Purchased -->
+<script src="{% static 'jquery-3.7.1.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        // alert('haii');
+
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+        });
+
+        $("#PurchasedOption").change(function () {
+            var PurchasedOption = $(this).val();
+            // alert(PurchasedOption);
+
+            // Clear table before loading new data
+            $('#Purchased').empty();
+            $('#Rented').empty();
+
+            $.ajax({
+                type: "POST",
+                url: '{% url "fillPurchasedOption" %}', // Correct URL for fetching data
+                data: { rqo: PurchasedOption },
+                dataType: "json",
+                success: function (data) {
+                    $('#Purchased').empty();
+                    // alert("Data Loaded");
+
+                    $.each(data, function (key, val) {
+                        var id = val.ppayment_id
+                        // Define all 4 URLs dynamically
+                        var placeUrl = '{% url "placed" 0 %}'.replace('0', id);
+                        var transitUrl = '{% url "transit" 0 %}'.replace('0', id);
+                        var for_deliveryUrl = '{% url "for_delivery" 0 %}'.replace('0', id);
+                        var deliveredUrl = '{% url "delivered" 0 %}'.replace('0', id);
+
+                        // Create a simple <select> dropdown with 4 options
+                        var dropdown = `
+                            <select class="form-control order-action" data-id="` + id + `">
+                                <option value="">Select Action</option>
+                                <option value="` + placeUrl + `">Order Placed</option>
+                                <option value="` + transitUrl + `">In Transit</option>
+                                <option value="` + for_deliveryUrl + `">Out for Delivery</option>
+                                <option value="` + deliveredUrl + `">Delivered</option>
+                            </select>
+                        `;
+
+                        // Create table row with data and dropdown
+                        var row = `
+                            <tr>
+                                <td>` + (key + 1) + `</td>
+                                <td>` + val.ppayment_purchaserequestid__purchase_toolid__tool_name + `</td>
+                                <td><img src="/Images/` + val.ppayment_purchaserequestid__purchase_toolid__tool_photo + `" style="width: 100px; height: 60px;"></td>
+                                <td>` + val.ppayment_date + `</td>
+                                <td>` + val.ppayment_amount + `</td>
+                                <td>` + val.ppayment_userid__user_name + `</td>
+                                <td>` + dropdown + `</td>
+                            </tr>
+                        `;
+
+                        $('#Purchased').append(row);
+                    });
+
+                    // Handle dropdown change event to navigate to the selected URL
+                    $(document).on('change', '.order-action', function () {
+                        var actionUrl = $(this).val();
+                        if (actionUrl) {
+                            window.location.href = actionUrl; // Redirect to selected URL
+                        }
+                    });
+                },
+                error: function () {
+                    alert("Error loading data");
+                }
+            });
+        });
+    });
+</script>
+
+
+<!-- Accepted -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // alert('haii');
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{ csrf_token }}' }
+        });
+
+        function updateTableHeader(selectedOption) {
+            if (selectedOption === "Rented") {
+                $("thead").html(`
+                    <tr>
+                        <th scope="col">Tools Name</th>
+                        <th scope="col">Tools Image</th>
+                        <th scope="col">Paymount date</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Customer name</th>
+                        <th scope="col">Rent From Date</th>
+                        <th scope="col">Rent To Date</th>
+                        <th scope="col">Update if Returned</th>
+                    </tr>
+                `);
+            }else {
+                $("thead").html(`
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tools Name</th>
+                        <th scope="col">Tools Image</th>
+                        <th scope="col">Paymount date</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Customer name</th>
+                        <th>Order Actions</th>
+                    </tr>
+                `);
+        }
+    }
+        $("input[name='SelectOption']").change(function () {
+            var selectedOption = $(this).val();
+
+            // Clear both tables before updating
+            $('#Purchased').empty();
+            // $('#Rented').empty();
+
+
+            updateTableHeader(selectedOption);
+        });
+
+        $("#RentedOption").change(function () {
+            var RentedOption = $(this).val();
+            // alert(RentedOption);
+            // Clear both tables before loading new data
+            $('#Purchased').empty();
+            $('#Rented').empty();
+
+            $.ajax({
+                type: "POST",
+                url: '{% url "fillRentedOption" %}',
+                data: { rqo: RentedOption },       ///////////////////////
+                dataType: "json",
+                success: function (data) {
+                    $('#Rented').empty();
+                    updateTableHeader("Rented");
+                    // alert("Data Loaded");
+
+                    $.each(data, function (key, val) {
+                        var id = val.rpayment_id
+                        var returnUrl = '{% url "rentUpdate" 0 %}'.replace('0', id); // Payment URL
+                        var row = '<tr>' +
+                            '<td>' + val.rpayment_rentrequestid__request_toolid__tool_name + '</td>' +
+                            '<td><img src="/Images/' + val.rpayment_rentrequestid__request_toolid__tool_photo + '" style="width: 100px; height: 60px;"></td>' +
+                            '<td>' + val.rpayment_date + '</td>' +
+                            '<td>' + val.rpayment_amount + '</td>' +
+                            '<td>' + val.rpayment_userid__user_name + '</td>' +
+                            '<td>' + val.rpayment_rentrequestid__request_requireddate + '</td>' +
+                            '<td>' + val.rpayment_rentrequestid__request_returndate + '</td>' +
+                            '<td><a class="btn btn-success" href="' + returnUrl + '">Returned</a></td>' +  // Update button
+                            '</tr>';
+
+                        $('#Rented').append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", error);
+                }
+            });
+        });
+    });
+</script>

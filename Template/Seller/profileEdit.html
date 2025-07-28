@@ -1,0 +1,128 @@
+{% load static %}
+
+{% include 'Seller/Header.html' %}
+
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-md-9">
+
+                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"></span>Enter Tool Details</h4>
+            </div>
+            <div class=" col-lg-3">
+                <button type="button" class="btn btn-primary" onclick="window.location.href='view.php'">View</button>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-11">
+                <div class="card mb-4">
+                    <h5 class="card-header">Tool Edit</h5>
+                    <div class="card-body">
+                        
+                        <form action="{% url 'editprofile' seller.seller_id %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}                        
+                            <label for="floatingInput">Seller Name</label>
+                            <div class="form-floating mb-3">
+                            <input type="text" name="txtname" value="{{ seller.seller_name }}" class="form-control"/>  
+                            </div>
+                            <label for="floatingInput">Seller image</label><br><br>
+                            <div class="form-floating mb-3">
+                            <img src="/Images/{{ seller.seller_image }}" class="img-circle" width="75px" height="75px">
+                            <input type="hidden" name="pimage" value="{{ seller.seller_image }}">
+                           <input type="file" class="input-xlarge" name="pimagenew"   />
+                            </div>
+                            <label for="floatingInput">Email</label>
+                            <div class="form-floating mb-3">
+                                <input type="text" name="txtdis" class="form-control" value="{{ seller.seller_email }}" id="floatingInput" placeholder="Mail"
+                                    aria-describedby="floatingInputHelp" />  
+                            </div>
+                            <label for="floatingInput">Phone</label>
+                            <div class="form-floating mb-3">                            
+                                <input type="number" name="phone" class="form-control" value="{{ seller.seller_phone }}" id="floatingInput" placeholder="Phone"
+                                    aria-describedby="floatingInputHelp" />  
+                            </div>
+                            <label for="floatingInput">Landmark</label>
+                            <div class="form-floating mb-3">                            
+                                <input type="text" name="Landmark" class="form-control" value="{{ seller.seller_landmark }}" id="floatingInput" placeholder="Landmark"
+                                    aria-describedby="floatingInputHelp" />  
+                            </div>
+                            <label for="floatingInput">Pincode</label>
+                            <div class="form-floating mb-3">                            
+                                <input type="number" name="pincode" class="form-control" value="{{ seller.seller_pincode }}" id="floatingInput" placeholder="Phone"
+                                    aria-describedby="floatingInputHelp" />  
+                            </div>  
+                             
+                            <!-- <label for="floatingInput">Location</label>
+                            <div class="form-floating mb-3">                            
+                                <input type="text" name="location" class="form-control" value="{{ seller.seller_location.location_name }}" id="floatingInput" placeholder="Phone"
+                                    aria-describedby="floatingInputHelp" />  
+                             -->
+                            <label for="floatingInput">District</label>
+                            <div class="form-floating mb-3">  
+                            <select name="districtid" id="districtid" class="w-100 form-control border-2 py-3 mb-4">
+                                <option value="">{{ seller.seller_location.district_id.district_name }}</option>
+                                {% for d in districts %}
+                                <option value="{{d.district_id}}">{{d.district_name}}</option>
+                                {% endfor %}
+                            </select>
+                            </div> 
+                            <label for="floatingInput">Location</label>
+                            <div class="form-floating mb-3">
+                            <select name="location" id="location" class="w-100 form-control border-2 py-3 mb-4">
+                                
+                            </select> 
+                        </div>                  
+                                
+                            <div class="form-floating">
+                               
+                            <button type="submit" name="btnSubmit" class="btn btn-primary">Update</button>
+                           
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+{% include 'Seller/Footer.html' %}
+<script src="{% static 'jquery-3.7.1.min.js' %}"></script>
+    <script>
+	$(document).ready(function()
+	{
+        $.ajaxSetup({
+		headers : {"X-CSRFToken" : '{{csrf_token}}'}
+		});
+		$("#districtid").change(function()
+		{
+		var districtid=$(this).val();
+		$.ajax({
+				type:"POST",
+				url : '{% url "filllocation" %}',
+				data : {did :districtid},
+				dataType:"json",
+				success : function(data)
+				{
+				$('#location').empty();
+                
+                    // Populate table with new data
+                    $.each(data,function(key,val) {
+                    var row = "<option value='"+val.location_id+"'>"+val.location_name+"</option>";
+					$('#location').append(row);
+                    });
+                 }
+                 });
+		});
+	});
+</script>
+
+

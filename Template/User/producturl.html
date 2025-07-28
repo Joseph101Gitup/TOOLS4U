@@ -1,0 +1,143 @@
+{% load static %}
+{% include 'User/Header.html' %}
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">{{type}} Details</h1>
+</div>
+<!-- Single Page Header End -->
+
+{% for t in tools %}
+<!-- Single Product Start -->
+<form action="{% url 'productRent' %}" method="POST">
+    {% csrf_token %}
+<div class="container-fluid py-5 mt-5">
+    <div class="container py-5">
+        <div class="row g-4 mb-5">
+            <div class="col-lg-8 col-xl-9">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="border rounded">
+                            <a href="#">
+                                <img src="/Images/{{ t.tool_photo }}" class="img-fluid rounded" alt="Image">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 class="fw-bold mb-3">{{ t.tool_name }}</h4>
+                        <p class="mb-3">Category: {{ t.tool_subcategory.subcategory_id.category_id.category_name }}</p>
+                        <h5 class="fw-bold mb-3">₹{{ t.tool_price }}</h5>
+
+                        <div class="d-flex mb-4">
+                            <i class="fa fa-star text-secondary"></i>
+                            <i class="fa fa-star text-secondary"></i>
+                            <i class="fa fa-star text-secondary"></i>
+                            <i class="fa fa-star text-secondary"></i>
+                            <i class="fa fa-star"></i>
+                        </div>
+
+                        <p class="mb-4">{{ t.tool_discription }}.</p>
+
+                        <div class="input-group quantity mb-5" style="width: 100px;">
+                            <input type="number" required name="qty" id="qty" class="form-control form-control-sm text-center border-2" onchange="calculate()">
+                            <div class="input-group-btn">
+                                <label for="totalnumber">Total Price:</label>
+                                <input type="number" name="totalamount" id="totalamount" placeholder="₹" readonly><br><br>
+                                
+                                <input type="hidden" name="price" id="price" value="{{ t.tool_price }}">
+                                <input type="hidden" name="toolid" value="{{ t.tool_id }}">
+                                <input type="hidden" name="toolimg" value="{{t.tool_photo}}">
+                                <input type="hidden" name="name" value="{{t.tool_name}}">
+                                <input type="hidden" name="stock" value="{{t.tool_stock}}">
+
+                                
+                            </div>
+                        </div>
+
+                        <!-- Rentable or Purchasable Type Selection -->
+                        <div id="rentableFields" style="{% if type == 'Rentable' %} display:block; {% else %} display:none; {% endif %}">
+                            <label for="rentDate">Rent Date:</label>
+                            <input type="date" name="rentDate" id="rentDate" class="form-control mb-3" {% if type == 'Purchasable' %} disabled {% endif %}>
+                            <label for="rentToDate">Rent upto Date:</label>
+                            <input type="date" name="rentToDate" id="rentToDate" class="form-control mb-3" {% if type == 'Purchasable' %} disabled {% endif %}>
+                        </div>
+                        
+                        <!-- Rent Request Form -->
+                        {% if type == 'Rentable' %}
+                    
+                            <input type="submit" class="btn border border-secondary rounded-pill px-4 py-2 text-primary" name="send" value="Request to Rent">
+                        
+                        {% else %}
+
+                        <input type="submit" class="btn border border-secondary rounded-pill px-4 py-2 text-primary" name="send" value="Direct Payment">
+                        
+                     
+                        {% endif %}
+                    </div>
+
+                    <div class="col-lg-12">
+                        <nav>
+                            <div class="nav nav-tabs mb-3">
+                                <button class="nav-link active border-white border-bottom-0" type="button" role="tab" id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about" aria-controls="nav-about" aria-selected="true">Description</button>
+                                <button class="nav-link border-white border-bottom-0" type="button" role="tab" id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission" aria-controls="nav-mission" aria-selected="false">Reviews</button>
+                            </div>
+                        </nav>
+                        <div class="tab-content mb-5">
+                            <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                                <p>{{ t.tool_discription }}.</p>
+                            </div>
+                            <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
+                                <!-- Reviews content -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <form action="#">
+                        <h4 class="mb-5 fw-bold">Leave a Reply</h4>
+                         Review Form 
+                    </form> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</form>
+
+{% include 'User/Footer.html' %}
+
+<script>
+    function calculate() {
+        var qty = document.getElementById('qty').value;
+        var price = document.getElementById('price').value;
+        var total = parseInt(qty) * parseInt(price);
+        document.getElementById('totalamount').value = total;
+        document.getElementById('paymentQty').value = qty;
+        document.getElementById('paymentTotalAmount').value = total;
+        document.getElementById('rentQty').value = qty;
+    }
+</script>
+<!-- <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+
+        var rentDate = document.getElementById("rentDate");
+        var rentToDate = document.getElementById("rentToDate");
+
+        // Set max attribute to prevent future date selection
+        rentDate.setAttribute("max", today);
+        rentToDate.setAttribute("max", today);
+
+        // Ensure To Date is not earlier than From Date
+        rentDate.addEventListener("change", function () {
+            rentToDate.setAttribute("min", rentDate.value); // Set min date for To Date
+        });
+
+        rentToDate.addEventListener("change", function () {
+            if (rentToDate.value < rentDate.value) {
+                alert("To Date cannot be before From Date!");
+                rentToDate.value = ""; // Reset To Date if it's invalid
+            }
+        });
+    });
+</script> -->

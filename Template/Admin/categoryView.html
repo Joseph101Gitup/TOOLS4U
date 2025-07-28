@@ -1,0 +1,86 @@
+{% include 'Admin/Header.html' %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+
+        <!-- Main-body start -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- Page-header start -->
+                <div class="page-header card">
+                    <div class="row align-items-end">
+                        <div class="col-lg-8">
+                            <div class="page-header-title">
+                                <i class="icofont icofont-file-code bg-c-blue"></i>
+                                <div class="d-inline">
+                                    <h4>Category View Table</h4>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="page-header-breadcrumb">
+                                <ul class="breadcrumb-title">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html">
+                                            <i class="icofont icofont-home"></i>
+                                        </a>
+                                    </li>
+                                    <!-- <li class="breadcrumb-item"><a href="#!">Form Components</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="#!">Form Components</a>
+                                    </li> -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Page-header end -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5>District table</h5>
+                        <div class="card-header-right">
+                        <ul class="list-unstyled card-option">        
+                        <li><i class="icofont icofont-simple-left "></i></li>        
+                        <li><i class="icofont icofont-maximize full-card"></i></li>        
+                        <li><i class="icofont icofont-minus minimize-card"></i></li>        
+                        <li><i class="icofont icofont-refresh reload-card"></i></li>        
+                        <li><i class="icofont icofont-error close-card"></i></li>    
+                    </ul></div>
+                    </div>
+                    <div class="card-block table-border-style">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Category Name</th>
+                                        <th>Category Image</th>
+                                        <th>Delete</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for c in category %}
+                                    <tr>
+                                        <th scope="row">{{ forloop.counter }}</th>
+                                        <td>{{c.category_name}}</td> <!-- category_name table field name -->
+                                        <td><img src="/Images/{{c.category_image}}" style="width: 100px;height: 60px;"></td>
+                                        <td><a href="{% url 'deletecategory' categoryid=c.category_id %}" 
+                                            onclick = "return confirm('Do You Want To Delete?')"
+                                            class="btn btn-danger">Delete</a></td>
+                                        <td><a href="{% url 'categoryEdit' categoryid=c.category_id %}" 
+                                            
+                                            class="btn btn-success">Edit</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                                    </form>
+
+{% include 'Admin/Footer.html' %}
+
+

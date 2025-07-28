@@ -1,0 +1,375 @@
+{% load static %}
+
+{% include 'User/Header.html' %}
+
+
+
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Rented Products</h1>
+    <p class="text-center text-white display-8">Rented products should be collect from the delership directly</p>
+
+</div>
+<!-- Single Page Header End -->
+
+
+<!-- Cart Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <!-- Single Page Header End -->
+
+        <div class="container-fluid py-3 text-center">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="SelectOption" id="RequestedOption" value="Requested">
+                <label class="form-check-label" for="RequestedOption">
+                    <h1>Requested</h1>
+                </label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="SelectOption" id="AcceptedOption" value="Accepted">
+                <label class="form-check-label" for="AcceptedOption">
+                    <h1>Accepted</h1>
+                </label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="SelectOption" id="RejectedOption" value="Rejected">
+                <label class="form-check-label" for="RejectedOption">
+                    <h1>Rejected</h1>
+                </label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="SelectOption" id="PaidOption" value="Paid">
+                <label class="form-check-label" for="PaidOption">
+                    <h1>Paid</h1>
+                </label>
+            </div>
+        </div>
+
+        <!-- Cart Page Start -->
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Product image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                   
+
+                </tbody>
+                <tbody id="Requested">
+
+                </tbody>
+                <tbody id="Accepted">
+
+                </tbody>
+                <tbody id="Rejected">
+
+                </tbody>
+                <tbody id="Paid">
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row g-4 justify-content-end">
+            <div class="col-8"></div>
+            <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Cart Page End -->
+<script src="{% static 'jquery-3.7.1.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        //alert('haii');
+
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+        });
+        $("#RequestedOption").change(function () {
+            var RequestedOption = $(this).val();
+            //alert(RequestedOption);
+            // Clear both tables before loading new data
+            $('#Requested').empty();
+            $('#Accepted').empty();
+            $('#Rejected').empty();
+            $('#Paid').empty();
+
+            $.ajax({
+                type: "POST",
+                url: '{% url "fillRequestedOption" %}',
+                data: { rqo: RequestedOption },
+                dataType: "json",
+                success: function (data) {
+                    $('#Requested').empty();
+
+                    //alert("test");
+
+                    // Populate table with new data
+                    $.each(data, function (key, val) {
+
+                        var row = '<tr> <td><img src="/Images/' + val.request_toolid__tool_photo + '" style="width: 100px; height: 60px;"></td>' +
+                            
+                            '<td>' + val.request_toolid__tool_name + '</td>' +
+                            '<td>' + val.request_toolid__tool_price + '</td>' +
+                            '<td>' + val.request_quantity + '</td>' +
+                            '<td>' + val.request_tprice + '</td>' +
+                            //   '<td class="btn btn-danger"><a class="btn btn-danger" href=" ' + editurl +'">Edit</a></td>'+
+                            '</tr>';
+                        //alert(row);
+                        $('#Requested').append(row);
+                    });
+                }
+            });
+        });
+    });
+</script>
+<!-- Accepted -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{ csrf_token }}' }
+        });
+
+        function updateTableHeader(selectedOption) {
+            if (selectedOption === "Accepted") {
+                $("thead").html(`
+                    <tr>
+                        <th scope="col">Product image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Payment</th>
+                    </tr>
+                `);
+            } else {
+                $("thead").html(`
+                    <tr>
+                        <th scope="col">Product image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                `);
+            }
+        }
+
+        $("input[name='SelectOption']").change(function () {
+            var selectedOption = $(this).val();
+            
+            // Clear both tables before updating
+            $('#Requested').empty();
+            $('#Accepted').empty();
+            
+            
+            updateTableHeader(selectedOption);
+        });
+
+        $("#AcceptedOption").change(function () {
+            var AcceptedOption = $(this).val();
+            
+            // Clear both tables before loading new data
+            $('#Requested').empty();
+            $('#Accepted').empty();
+            $('#Rejected').empty();
+            $('#Paid').empty();
+
+            $.ajax({
+                type: "POST",
+                url: '{% url "fillAcceptedOption" %}',
+                data: { rqo: AcceptedOption},       ///////////////////////
+                dataType: "json",
+                success: function (data) {
+                    updateTableHeader("Accepted");
+
+                    $.each(data, function (key, val) {
+                        var id = val.request_id
+                        // alert(id)
+                        var paymentUrl = '{% url "rentPayment" 0 %}'.replace('0', id); // Payment URL
+                       
+                        var row = '<tr>' +
+                            '<td><img src="/Images/' + val.request_toolid__tool_photo + '" style="width: 100px; height: 60px;"></td>' +
+                            '<td>' + val.request_toolid__tool_name + '</td>' +
+                            '<td>' + val.request_toolid__tool_price + '</td>' +
+                            '<td>' + val.request_quantity + '</td>' +
+                            '<td>' + val.request_tprice + '</td>' +
+                            '<td><a class="btn btn-success" href="' + paymentUrl + '">Pay Now</a></td>' +  // Payment button
+                            '</tr>';
+
+                        $('#Accepted').append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", error);
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Rejected -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{ csrf_token }}' }
+        });
+
+        function updateTableHeader(selectedOption) {
+            if (selectedOption === "Rejected") {
+                $("thead").html(`
+                    <tr>
+                        <th scope="col">Product image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Reason</th>
+                    </tr>
+                `);
+            } 
+        }
+
+        $("input[name='SelectOption']").change(function () {
+            var selectedOption = $(this).val();
+            
+            // Clear both tables before updating
+            $('#Requested').empty();
+            $('#Accepted').empty();
+           
+            
+            updateTableHeader(selectedOption);
+        });
+
+        $("#RejectedOption").change(function () {
+            var RejectedOption = $(this).val();
+            
+            // Clear both tables before loading new data
+            $('#Requested').empty();
+            $('#Accepted').empty();
+            $('#Rejected').empty();
+            $('#Paid').empty();
+
+            $.ajax({
+                type: "POST",
+                url: '{% url "fillRejectedOption" %}',
+                data: { rqo: RejectedOption },
+                dataType: "json",
+                success: function (data) {
+                    updateTableHeader("Rejected");
+
+                    $.each(data, function (key, val) {
+                        // var paymentUrl = "/make_payment/" + val.request_toolid_id + "/";  // Payment URL
+                        
+                        var row = '<tr>' +
+                            '<td><img src="/Images/' + val.request_toolid__tool_photo + '" style="width: 100px; height: 60px;"></td>' +
+                            '<td>' + val.request_toolid__tool_name + '</td>' +
+                            '<td>' + val.request_toolid__tool_price + '</td>' +
+                            '<td>' + val.request_quantity + '</td>' +
+                            '<td>' + val.request_tprice + '</td>' +
+                            '<td>' + val.request_Remark + '</td>' +
+                            // '<td><a class="btn btn-success" href="' + paymentUrl + '">Pay Now</a></td>' +  // Payment button
+                            '</tr>';
+
+                        $('#Rejected').append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", error);
+                }
+            });
+        });
+    });
+</script>
+<!-- Paid -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{ csrf_token }}' }
+        });
+        // alert("hai")
+        function updateTableHeader(selectedOption) {
+            if (selectedOption === "Paid") {
+                $("thead").html(`
+                    <tr>
+                        <th scope="col">Product image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Coustomer</th>
+                    </tr>
+                `);
+            } 
+        }
+
+        $("input[name='SelectOption']").change(function () {
+            var selectedOption = $(this).val();
+            // alert(selectedOption)
+            // Clear both tables before updating
+            $('#Requested').empty();
+            $('#Accepted').empty();
+            $('#Rejected').empty();
+           
+            
+            updateTableHeader(selectedOption);
+        });
+
+        $("#PaidOption").change(function () {
+            var PaidOption = $(this).val();
+            // alert(PaidOption)
+            // Clear both tables before loading new data
+            $('#Requested').empty();
+            $('#Accepted').empty();
+            $('#Rejected').empty();
+            $('#Paid').empty();
+
+            $.ajax({
+                type: "POST",
+                url: '{% url "fillPaidOption" %}',
+                data: { rqo: PaidOption },
+                dataType: "json",
+                success: function (data) {
+                    updateTableHeader("Paid");
+
+                    $.each(data, function (key, val) {
+                        
+                        var row = '<tr>' +
+                            '<td><img src="/Images/' + val.rpayment_rentrequestid__request_toolid__tool_photo + '" style="width: 100px; height: 60px;"></td>' +
+                            '<td>' + val.rpayment_rentrequestid__request_toolid__tool_name + '</td>' +
+                            '<td>' + val.rpayment_rentrequestid__request_toolid__tool_price + '</td>' +
+                            '<td>' + val.rpayment_rentrequestid__request_quantity + '</td>' +
+                            '<td>' + val.rpayment_rentrequestid__request_tprice + '</td>' +
+                            '<td>' + val.rpayment_date + '</td>' +
+                            '<td>' + val.rpayment_userid__user_name + '</td>' +
+                            // '<td><a class="btn btn-success" href="' + paymentUrl + '">Pay Now</a></td>' +  // Payment button
+                            '</tr>';
+                            // alert(row)
+                        $('#Paid').append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", error);
+                }
+            });
+        });
+    });
+</script>
+
+{% include 'User/Footer.html' %}

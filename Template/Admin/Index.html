@@ -1,0 +1,53 @@
+{% load static %}
+{% include 'Admin/Header.html' %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <div class="main-body">
+            <div class="page-wrapper">
+                <div class="page-body">
+                    <div class="row">
+
+                        <!-- Animated Cards -->
+                        <div class="col-md-4" data-aos="fade-up">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Tools registered</h5>
+                                    <p class="card-text">{{tools}} </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Sellers</h5>
+                                    <p class="card-text">{{seller}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Customers</h5>
+                                    <p class="card-text">{{Coustomers}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div> 
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'Admin/Footer.html' %}
+
+<!-- AOS JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+    AOS.init();  // Initialize AOS
+</script>

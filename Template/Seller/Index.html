@@ -1,0 +1,313 @@
+{% load static %}
+
+{% include 'Seller/Header.html' %}
+
+
+        <div class="container">
+          <div class="page-inner">
+            <div
+              class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
+            >
+              <div>
+                <h3 class="fw-bold mb-3">Dashboard</h3>
+                <h6 class="fw-bold mb-3">welcome {{ request.session.sellername }} ,PLEASE CHECK YOUR DASHBOARD REGULARLY</h6>
+              </div>
+              <div class="ms-md-auto py-2 py-md-0">
+                
+                
+                
+                
+              </div>
+            </div>
+            <div class="row">
+            
+              <div class="col-sm-6 col-md-3">
+                <a href="{% url 'toolsRegistration'%}" >
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div
+                          class="icon-big text-center icon-primary bubble-shadow-small"
+                        >
+                          <i class="fas fa-users"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Tools Registration</p>
+                          <!-- <h4 class="card-title">1,294</h4> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </a>
+              </div>
+              <div class="col-sm-6 col-md-3">
+              <a href="{% url 'toolsView' %}" >
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div
+                          class="icon-big text-center icon-info bubble-shadow-small"
+                        >
+                          <i class="fas fa-user-check"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">View Tools</p>
+                          <!-- <h4 class="card-title">1303</h4> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </a>
+              </div>
+             
+              <div class="col-sm-6 col-md-3">
+              <a href="{% url 'requestView' %}">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div
+                          class="icon-big text-center icon-success bubble-shadow-small"
+                        >
+                          <i class="fas fa-luggage-cart"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Sales Request</p>
+                          <!-- <h4 class="card-title">$ 1,345</h4> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </a>
+              </div>
+              
+              <div class="col-sm-6 col-md-3">
+              <a href="{% url 'paymentView' %}" >
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div
+                          class="icon-big text-center icon-secondary bubble-shadow-small"
+                        >
+                          <i class="far fa-check-circle"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Payment Report</p>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </a>
+              </div>
+            </div>
+           
+             
+            </div>
+            
+        <div>
+    
+    <style>
+        /* Reset */
+        /* * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            background-color: #f0f8ff; /* Light blue background 
+            overflow: hidden;
+            position: relative;
+        } */
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            
+        }
+
+        /* Dynamic line animations */
+        .dynamic-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #42a5f5, #f48fb1, #ffeb3b, #7e57c2);
+            animation: moveLine 7s infinite ease-in-out;
+            opacity: 0.8;
+        }
+
+        .dynamic-line:nth-child(1) {
+            top: 15%;
+            animation-duration: 5s;
+        }
+
+        .dynamic-line:nth-child(2) {
+            top: 35%;
+            animation-duration: 6s;
+        }
+
+        .dynamic-line:nth-child(3) {
+            top: 55%;
+            animation-duration: 8s;
+        }
+
+        .dynamic-line:nth-child(4) {
+            top: 75%;
+            animation-duration: 10s;
+        }
+
+        /* Adding floating circle elements */
+        .circle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.6), transparent);
+            animation: floatCircle 12s infinite ease-in-out;
+            opacity: 0.9;
+        }
+
+        .circle:nth-child(5) {
+            left: 20%;
+            top: 25%;
+            animation-duration: 10s;
+        }
+
+        .circle:nth-child(6) {
+            left: 55%;
+            top: 40%;
+            animation-duration: 15s;
+        }
+
+        .circle:nth-child(7) {
+            left: 70%;
+            top: 60%;
+            animation-duration: 18s;
+        }
+
+        .circle:nth-child(8) {
+            left: 85%;
+            top: 80%;
+            animation-duration: 12s;
+        }
+
+        /* Travel-related items */
+        .travel-item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: popUp 10s infinite ease-in-out;
+            opacity: 0.9;
+        }
+
+        /* Icons for airplane, suitcase, etc. */
+        .item-plane {
+            background-image: url('../Upload/plane3.png');
+            left: 25%;
+            top: 10%;
+        }
+
+        .item-suitcase {
+            background-image: url('../Upload/plane3.png');
+            left: 60%;
+            top: 50%;
+        }
+
+        .item-map {
+            background-image: url('../Upload/plane3.png');
+            left: 75%;
+            top: 30%;
+        }
+
+        .item-camera {
+            background-image: url('../Upload/plane3.png');
+            left: 35%;
+            top: 70%;
+        }
+
+        /* Animation keyframes */
+        @keyframes moveLine {
+            0% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        @keyframes floatCircle {
+            0% {
+                transform: scale(0.8) translateY(-20px);
+            }
+            50% {
+                transform: scale(1.2) translateY(20px);
+            }
+            100% {
+                transform: scale(0.8) translateY(-20px);
+            }
+        }
+
+        @keyframes popUp {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1) rotate(360deg);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5) rotate(720deg);
+            }
+        }
+    </style>
+
+<div class="container">
+        <!-- Dynamic lines -->
+        <div class="dynamic-line"></div>
+        <div class="dynamic-line"></div>
+        <div class="dynamic-line"></div>
+        <div class="dynamic-line"></div>
+
+        <!-- Circles for futuristic symbols -->
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+
+        <!-- Travel-related items: Airplane, Suitcase, Map, Camera -->
+        <div class="travel-item item-plane"></div>
+        <div class="travel-item item-suitcase"></div>
+        <div class="travel-item item-map"></div>
+        <div class="travel-item item-camera"></div>
+    </div>
+   
+</div>
+
+ 
+{% include 'Seller/Footer.html' %} 

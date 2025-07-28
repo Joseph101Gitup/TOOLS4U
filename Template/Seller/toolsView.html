@@ -1,0 +1,183 @@
+{% load static %}
+
+{% include 'Seller/Header.html' %}
+
+<br><br><br><br>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <div>
+                    <h4> Tools View </h4>
+                </div>
+
+            </div>
+
+
+            <div class="d-flex align-items-center">
+                <div class="col-md-12">
+
+                    <label>Category</label>
+
+                    <select name="categoryid" id="categoryid" class="form-control">
+                        <option value="">---Select---</option>
+                        {% for c in category %}
+                        <option value="{{c.category_id}}">{{c.category_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="d-flex align-items-center">
+                <div class="col-md-12">
+
+                    <label>Subcategory</label>
+
+                    <select name="subcategory" id="subcategory" class="form-control">
+
+                    </select>
+                </div>
+
+            </div>
+
+
+            <div class="d-flex align-items-center">
+                <div class="col-md-12">
+
+
+                    <label>Type</label>
+
+                    <select name="typeid" id="typeid" class="form-control">
+                        <option value="">---Select Type---</option>
+
+                        <option value="Rentable">Rentable</option>
+                        <option value="Purchasable">Purchasable</option>
+
+                    </select>
+                </div>
+
+            </div>
+
+
+
+
+
+
+        </div>
+        <div class="card-body">
+            <!-- Modal -->
+            <!-- <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title">
+                                <span class="fw-mediumbold"> New</span>
+                                <span class="fw-light"> Row </span>
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" id="addRowButton" class="btn btn-primary">
+                                Add
+                            </button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="table-responsive">
+                <table id="add-row" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tools Name</th>
+                            <th>Tools img</th>
+                            <th>Discription</th>
+                            <th>Amount</th>
+                            <th style="width: 10%">Delete</th>
+                            <th style="width: 10%">Edit</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tools">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'Seller/Footer.html' %}
+<script src="{% static 'jquery-3.7.1.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+        });
+        $("#categoryid").change(function () {
+            var categoryid = $(this).val();
+            //alert(categoryid)
+            $.ajax({
+                type: "POST",
+                url: '{% url "fillsubcategory" %}',
+                data: { cid: categoryid },
+                dataType: "json",
+                success: function (data) {
+                    $('#subcategory').empty();
+
+                    var row = "<option>Select Subcategory</option>";
+                    $('#subcategory').append(row);
+
+                    // Populate table with new data
+                    $.each(data, function (key, val) {
+                        var row = "<option value='" + val.subcategory_id + "'>" + val.subcategory_name + "</option>";
+                        $('#subcategory').append(row);
+                    });
+                }
+            });
+        });
+
+        $('#subcategory, #typeid').change(function () {
+            var subcategory = $('#subcategory').val();
+            var type = $('#typeid').val();
+            //alert(subcategory);
+            $.ajax({
+                type: "POST",
+                url: '{% url "filltools1" %}',
+                data: { scid: subcategory, tid: type },
+                dataType: "json",
+                success: function (data) {
+                    $('#tools').empty();
+                    // alert("test");
+                    s = 1;
+                    $.each(data, function (key, val) {
+                        var id = val.tool_id;
+                        var deleteurl = '{% url "deletetool" 0 %}'.replace('0', id);
+                        var editurl = '{% url "edittool" 0 %}'.replace('0', id);
+                        var row = '<tr> <td>' + s++ + '</td>' +
+                            '<td>' + val.tool_name + '</td>' +
+                            '<td><img src="/Images/' + val.tool_photo + '" style="width: 100px; height: 60px;"></td>' +
+                            '<td>' + val.tool_discription + '</td>' +
+                            '<td>' + val.tool_price + '</td>' +
+                            '<td ><a class="btn btn-danger" href=" ' + deleteurl + '">Delete</a></td>' +
+                            '<td ><a class="btn btn-success" href=" ' + editurl +'">Edit</a></td>'+
+                            '</tr>';
+                            //alert(row)
+                        $('#tools').append(row);
+                    });
+                }
+            });
+        });
+    });
+</script>
+

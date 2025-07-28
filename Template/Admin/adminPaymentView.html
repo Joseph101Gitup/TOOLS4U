@@ -1,0 +1,308 @@
+{% load static %}
+
+{% include 'Admin/Header.html' %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+
+        <!-- Main-body start -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- Page-header start -->
+                <div class="page-header card">
+                    <div class="row align-items-end">
+                        <div class="col-lg-8">
+                            <div class="page-header-title">
+                                <i class="icofont icofont-file-code bg-c-blue"></i>
+                                <div class="d-inline">
+                                    <h4>Payment View</h4>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="page-header-breadcrumb">
+                                <ul class="breadcrumb-title">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html">
+                                            <i class="icofont icofont-home"></i>
+                                        </a>
+                                    </li>
+                                    <!-- <li class="breadcrumb-item"><a href="#!">Form Components</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="#!">Form Components</a>
+                                    </li> -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Page-header end -->
+                <div class="card">
+                    <div class="container-fluid py-3 text-center">
+                        <div class="form-check form-check-inline">
+                            <center>
+                                <div class="form-floating mb-3">
+                                    <select name="txtyear" id="txtyear" class="form-control" style="width:500px;">
+                                        <option value="0">---Select Year---</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                        <option value="2029">2029</option>
+                                        <option value="2030">2030</option>
+                                        <option value="2031">2031</option>
+                                        <option value="2032">2032</option>
+                                        <option value="2033">2033</option>
+                                    </select>
+                                </div>
+                            </center>
+                            <input class="form-check-input" type="radio" name="SelectOption" id="PurchasedOption"
+                                value="Purchased">
+                            <label class="form-check-label" for="PurchasedOption">
+                                <h1>Purchased</h1>
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="SelectOption" id="RentedOption"
+                                value="Rented">
+                            <label class="form-check-label" for="RentedOption">
+                                <h1>Rented</h1>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-block table-border-style">
+                    <br>
+                    <div>
+                        <h4><a class="btn btn-success" id="exportLink" href="#">Export to Excel</a></h4>
+                    </div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            let radioButtons = document.querySelectorAll("input[name='SelectOption']");
+                            let exportLink = document.getElementById("exportLink");
+
+                            radioButtons.forEach(function (radio) {
+                                radio.addEventListener("change", function () {
+                                    let selectedValue = document.querySelector("input[name='SelectOption']:checked").value;
+                                    exportLink.href = `/Admin/Adminexport_excel/${selectedValue}`;
+                                });
+                            });
+                        });
+                    </script>
+
+
+
+
+                </div>
+                <div class="card-body">
+
+
+                    <div class="table-responsive">
+                        <table id="add-row" class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tools Name</th>
+                                    <th>Tools img</th>
+                                    <th>Paymount date</th>
+                                    <th>Amount</th>
+                                    <th>Customer name</th>
+                                    <th>Seller name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                            </tbody>
+                            <tbody id="Purchased">
+
+                            </tbody>
+                            <tbody id="Rented">
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'Admin/Footer.html' %}
+        <!-- Purchased -->
+        <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
+        <script>
+            $(document).ready(function () {
+                // alert('haii');
+
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": '{{csrf_token}}' }
+                });
+
+                $("#PurchasedOption").change(function () {
+                    var PurchasedOption = $(this).val();
+                    var year = $('#txtyear').val();
+                    // alert(PurchasedOption);
+
+                    // Clear table before loading new data
+                    $('#Purchased').empty();
+                    $('#Rented').empty();
+
+                    $.ajax({
+                        type: "POST",
+                        url: '{% url "AdminfillPurchasedOption" %}',
+                        data: { rqo: PurchasedOption, year: year },
+                        dataType: "json",
+                        success: function (data) {
+                            $('#Purchased').empty();
+                            // alert("Data Loaded");
+                            if(data.length === 0)
+                           {
+                                alert("No Data Available");
+                           }
+                           else{
+                            $.each(data, function (key, val) {
+                                var row = '<tr>' +
+                                    '<td>' + (key + 1) + '</td>' +
+                                    '<td>' + val.ppayment_purchaserequestid__purchase_toolid__tool_name + '</td>' +
+                                    '<td><img src="/Images/' + val.ppayment_purchaserequestid__purchase_toolid__tool_photo + '" style="width: 100px; height: 60px;"></td>' +
+                                    '<td>' + val.ppayment_date + '</td>' +
+                                    '<td>' + val.ppayment_amount + '</td>' +
+                                    '<td>' + val.ppayment_userid__user_name + '</td>' +
+                                    '<td>' + val.ppayment_purchaserequestid__purchase_toolid__tool_seller__seller_name + '</td>' +
+
+                                    '</tr>';
+
+                                $('#Purchased').append(row);
+                            });
+                        }
+                        },
+                        error: function () {
+                            alert("Error loading data");
+                        }
+                    });
+                });
+            });
+
+        </script>
+        <!-- Accepted -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // alert('haii');
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": '{{ csrf_token }}' }
+                });
+
+                function updateTableHeader(selectedOption) {
+                    if (selectedOption === "Rented") {
+                        $("thead").html(`
+                    <tr>
+                        <th scope="col">Tools Name</th>
+                        <th scope="col">Tools Image</th>
+                        <th scope="col">Payment date</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Customer name</th>
+                        <th scope="col">Seller name</th>
+                        <th scope="col">Rent From Date</th>
+                        <th scope="col">Rent To Date</th>
+                    </tr>
+                `);
+                    } else {
+                        $("thead").html(`
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tools Name</th>
+                        <th scope="col">Tools Image</th>
+                        <th scope="col">Payment date</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Customer name</th>
+                        <th scope="col">Seller name</th>
+                    </tr>
+                `);
+                    }
+                }
+                $("input[name='SelectOption']").change(function () {
+                    var selectedOption = $(this).val();
+                    var year = $('#txtyear').val();
+                    // Clear both tables before updating
+                    $('#Purchased').empty();
+                    // $('#Rented').empty();
+
+
+                    updateTableHeader(selectedOption);
+                });
+
+                $("#RentedOption").change(function () {
+                    var RentedOption = $(this).val();
+                    var year = $('#txtyear').val();
+                    // alert(RentedOption);
+                    // Clear both tables before loading new data
+                    $('#Purchased').empty();
+                    $('#Rented').empty();
+
+                    $.ajax({
+                        type: "POST",
+                        url: '{% url "AdminfillRentedOptions" %}',
+                        data: { rqo: RentedOption, year: year },
+                        dataType: "json",
+                        success: function (data) {
+                           
+                            $('#Rented').empty();
+                            updateTableHeader("Rented");
+                            // alert("Data Loaded");
+                           if(data.length === 0)
+                           {
+                                alert("No Data Available");
+                           }
+                           else{
+                            $.each(data, function (key, val) {
+                                // alert(val.rpayment_id);
+                                var row = '<tr>' +
+                                    '<td>' + val.rpayment_rentrequestid__request_toolid__tool_name + '</td>' +
+                                    '<td><img src="/Images/' + val.rpayment_rentrequestid__request_toolid__tool_photo + '" style="width: 100px; height: 60px;"></td>' +
+                                    '<td>' + val.rpayment_date + '</td>' +
+                                    '<td>' + val.rpayment_amount + '</td>' +
+                                    '<td>' + val.rpayment_userid__user_name + '</td>' +
+                                    '<td>' + val.rpayment_rentrequestid__request_toolid__tool_seller__seller_name + '</td>' +
+                                    '<td>' + val.rpayment_rentrequestid__request_requireddate + '</td>' +
+                                    '<td>' + val.rpayment_rentrequestid__request_returndate + '</td>' +
+                                    '</tr>';
+
+                                $('#Rented').append(row);
+                            });
+                        }
+                        }
+                       
+                        ,
+                        error: function (xhr, status, error) {
+                            console.error("AJAX Error:", error);
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var yearDropdown = document.getElementById("txtyear");
+
+                yearDropdown.addEventListener("change", function () {
+                    var selectedYear = this.value;
+                    if (selectedYear !== "0") {
+                        var currentUrl = new URL(window.location.href);
+                        currentUrl.searchParams.set("year", selectedYear);
+                        window.location.href = currentUrl.toString();
+                    }
+                });
+
+                // Automatically select the year from URL if available
+                var urlParams = new URLSearchParams(window.location.search);
+                var yearFromUrl = urlParams.get("year");
+                if (yearFromUrl) {
+                    yearDropdown.value = yearFromUrl;
+                }
+            });
+        </script>
+
+
+        {% include 'Admin/Footer.html' %}

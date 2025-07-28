@@ -1,0 +1,73 @@
+{% include 'Admin/Header.html' %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+
+        <!-- Main-body start -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- Page-header start -->
+                <div class="page-header card">
+                    <div class="row align-items-end">
+                        <div class="col-lg-8">
+                            <div class="page-header-title">
+                                <i class="icofont icofont-file-code bg-c-blue"></i>
+                                <div class="d-inline">
+                                    <h4>District Registration Form</h4>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="page-header-breadcrumb">
+                                <ul class="breadcrumb-title">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html">
+                                            <i class="icofont icofont-home"></i>
+                                        </a>
+                                    </li>
+                                    <!-- <li class="breadcrumb-item"><a href="#!">Form Components</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="#!">Form Components</a>
+                                    </li> -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Page-header end -->
+                <div class="page-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- Basic Form Inputs card start -->
+                            <div class="card">
+                                <div class="card-header">
+                                    
+                                    <div class="card-header-right"><i class="icofont icofont-spinner-alt-5"></i></div>
+
+                                    <div class="card-header-right">
+                                        <i class="icofont icofont-spinner-alt-5"></i>
+                                    </div>
+
+                                </div>
+                                <div class="card-block">
+                                    <h4 class="sub-title">District Registration</h4>
+                                    <form action="{% url 'district_process'%}" method="post">
+                                        {% csrf_token %}
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">District</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" name="districtname">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-8 col-md-12">
+                                            <!-- Block level buttons with icon -->
+                                            <div class="form-group" style= "margin-left:300px;">
+                                                <!-- <button class="btn btn-success btn-square btn-block">Square Button</button> -->
+                                                <button type="submit" class="btn btn-info btn-round btn-block">Register</button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    {% include 'Admin/Footer.html' %}

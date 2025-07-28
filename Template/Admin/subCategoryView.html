@@ -1,0 +1,142 @@
+
+{% load static %}
+
+{% include 'Admin/Header.html' %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+
+        <!-- Main-body start -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- Page-header start -->
+                <div class="page-header card">
+                    <div class="row align-items-end">
+                        <div class="col-lg-8">
+                            <div class="page-header-title">
+                                <i class="icofont icofont-file-code bg-c-blue"></i>
+                                <div class="d-inline">
+                                    <h4>Sub Category View Form</h4>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="page-header-breadcrumb">
+                                <ul class="breadcrumb-title">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html">
+                                            <i class="icofont icofont-home"></i>
+                                        </a>
+                                    </li>
+                                    <!-- <li class="breadcrumb-item"><a href="#!">Form Components</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="#!">Form Components</a>
+                                    </li> -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Page-header end -->
+                <div class="page-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- Basic Form Inputs card start -->
+                            <div class="card">
+                                <div class="card-header">
+
+                                    <div class="card-header-right"><i class="icofont icofont-spinner-alt-5"></i></div>
+
+                                    <div class="card-header-right">
+                                        <i class="icofont icofont-spinner-alt-5"></i>
+                                    </div>
+
+                                </div>
+                                <div class="card-block">
+                                    <h4 class="sub-title">Sub Category View</h4>
+                                   
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Select Category</label>
+                                            <div class="col-sm-10">
+                                                <select name="categoryid" id="categoryid" class="form-control">
+                                                    <option value="">Select Category</option>
+                                                    {% for c in category %}
+                                                    <option value="{{c.category_id}}">{{c.category_name}}</option>
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Category table</h5>
+                                                <div class="card-header-right">
+                                                <ul class="list-unstyled card-option">        
+                                                <li><i class="icofont icofont-simple-left "></i></li>        
+                                                <li><i class="icofont icofont-maximize full-card"></i></li>        
+                                                <li><i class="icofont icofont-minus minimize-card"></i></li>        
+                                                <li><i class="icofont icofont-refresh reload-card"></i></li>        
+                                                <li><i class="icofont icofont-error close-card"></i></li>    
+                                            </ul></div>
+                                            </div>
+                                            <div class="card-block table-border-style">
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Subcategory Name</th>
+                                                                <th>Subcategory Image</th>
+                                                                <th>Delete</th>
+                                                                <th>Edit</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="subcategory">
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                   
+                                    <script src="{% static 'jquery-3.7.1.min.js' %}"></script>
+                                    <script>
+                                        $(document).ready(function() {
+                                          //  alert('haii');
+                                         $.ajaxSetup({
+                                            headers: { "X-CSRFToken": '{{csrf_token}}' }
+                                          });
+                                          $('#categoryid').change(function () {
+                                            var categoryid = $(this).val();
+                                              //alert(district);
+                                            $.ajax({
+                                              type: "POST",
+                                              url: '{% url "fillSubcategory" %}',
+                                              data: { cid: categoryid },
+                                              dataType: "json",
+                                              success: function (data) {
+                                                $('#subcategory').empty();
+                                                  //alert("test");
+                                                  s = 1;
+                                                  $.each(data, function (key, val) {
+                                                  var id=val.subcategory_id;
+                                                  var deleteurl='{% url "deletesubcategory" 0 %}'.replace('0', id);
+                                                  var editurl='{% url "subCategoryEdit" 0 %}'.replace('0', id);
+                                                  var row = '<tr> <td>' + s++ + '</td>' +
+                                                                  '<td>' + val.subcategory_name + '</td>'+
+                                                                  '<td><img src="/Images/' + val.subcategory_image + '" style="width: 100px; height: 60px;"></td>'+
+                                                                  '<td><a class="btn btn-danger" href=" ' + deleteurl +'">Delete</a></td>'+
+                                                                  '<td><a class="btn btn-success" href=" ' + editurl +'">Edit</a></td>'+
+                                                            '</tr>';
+                                                  $('#subcategory').append(row);
+                                              });
+                                              }
+                                            });
+                                          });
+                                        });
+                                        </script>
+                                      
+                                                                         
+
+                                    {% include 'Admin/Footer.html' %}

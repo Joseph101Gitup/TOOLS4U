@@ -1,0 +1,79 @@
+{% load static %}
+
+{% include 'Seller/Header.html' %}
+
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-md-9">
+
+                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"></span>Enter Tool Details</h4>
+            </div>
+            <div class=" col-lg-3">
+                <button type="button" class="btn btn-primary" onclick="window.location.href='view.php'">View</button>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-11">
+                <div class="card mb-4">
+                    <h5 class="card-header">Tool Edit</h5>
+                    <div class="card-body">
+                        
+                        <form action="{% url 'edittool' tool.tool_id %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}                        
+                            <label for="floatingInput">Enter package Name</label>
+                            <div class="form-floating mb-3">
+                            <input type="text" name="txtname" value="{{tool.tool_name}}" class="form-control"/>  
+                            </div>
+                            <label for="floatingInput">Enter package image</label><br><br>
+                            <div class="form-floating mb-3">
+                            <img src="/Images/{{tool.tool_photo}}" class="img-circle" width="75px" height="75px">
+                            <input type="hidden" name="pimage" value="{{tool.tool_photo}}">
+                           <input type="file" class="input-xlarge" name="pimagenew"   />
+                            </div>
+                            <label for="floatingInput">Enter description</label>
+                            <div class="form-floating mb-3">
+                                <input type="text" name="txtdis" class="form-control" value="{{tool.tool_discription}}" id="floatingInput" placeholder="House"
+                                    aria-describedby="floatingInputHelp" />  
+                            </div>
+                            <label for="floatingInput">Enter Tool Price</label>
+                            <div class="form-floating mb-3">                            
+                                <input type="number" name="price" class="form-control" value="{{tool.tool_price}}" id="floatingInput" placeholder="Pincode"
+                                    aria-describedby="floatingInputHelp" />  
+                            </div>
+                            <label for="floatingInput">Enter type</label>
+                            <div class="form-floating mb-3">  
+                                <label for="floatingInput"></label>
+                            <div class="form-floating mb-3">
+                                <select name="txttype" id="txttype" class="form-control" style="width:500px;" >
+                                <option value="{{tool.tool_type}}">{{tool.tool_type}}</option>
+                                <option value="Rentable">Rentable</option>
+                                <option value="Purchasable">Purchasable</option>
+                             </select>
+                            </div>                         
+                                <!-- <input type="number" name="txtamount" class="form-control" value="{{tool.tool_type}}" id="floatingInput" placeholder="Phone"
+                                    aria-describedby="floatingInputHelp" />  
+                             -->
+                            <div class="form-floating">
+                               
+                            <button type="submit" name="btnSubmit" class="btn btn-primary">Update</button>
+                           
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+{% include 'Seller/Footer.html' %}
+

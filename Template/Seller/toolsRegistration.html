@@ -1,0 +1,129 @@
+{% load static %}
+
+{% include 'Seller/Header.html' %}
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-md-9">
+
+                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"></span>Enter Tools Details</h4>
+            </div>
+            <div class=" col-lg-3">
+                <button type="button" class="btn btn-primary" onclick="window.location.href='view.php'">View</button>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-11">
+                <div class="card mb-4">
+                    <h5 class="card-header">Tools Registration</h5>
+                    <div class="card-body">
+                        <form action="{% url 'toolsRegistration_process'%}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                        <label for="floatingInput">Enter Tool Name</label>
+                            <div class="form-floating mb-3">
+                            <input type="text" name="txtname" class="form-control" required/>  
+                            </div>
+                            <label for="floatingInput">Enter tool image</label><br><br>
+                            <div class="form-floating mb-3">
+                            <input type="file" name="txtphoto" class="form-control" id="exampleInputMobile" placeholder="Choose your passport size photo"
+                                    aria-describedby="floatingInputHelp" required/>  
+                            </div>
+                            <label for="floatingInput">Enter description</label>
+                            <div class="form-floating mb-3">
+                                <input type="text" name="txtdis" class="form-control" id="floatingInput" placeholder="description"
+                                    aria-describedby="floatingInputHelp" required/>  
+                            </div>
+                            <label for="floatingInput">Enter Stock</label>
+                            <div class="form-floating mb-3">                            
+                                <input type="number" name="txtstock" class="form-control" id="floatingInput" placeholder="Number of stock"
+                                    aria-describedby="floatingInputHelp" required/>  
+                            </div>
+                            <label for="floatingInput">Enter amount</label>
+                            <div class="form-floating mb-3">                           
+                                <input type="number" name="txtamount" class="form-control" id="floatingInput" placeholder="price"
+                                    aria-describedby="floatingInputHelp" required/>  
+                            </div>
+                            
+                            <label for="floatingInput">Select Category: </label>
+                            <div class="form-floating mb-3">
+                                <select name="categoryid" id="categoryid" class="form-control" style="width:500px;" >
+                                <option value="0">---Select---</option>
+                                {% for c in category %}
+                                <option value="{{c.category_id}}">{{c.category_name}}</option>
+                                {% endfor %}
+                             </select>
+                            </div>
+                            <label for="floatingInput">Select SubCategory: </label>
+                            <div class="form-floating mb-3">
+                                <select name="subcategory" id="subcategory" class="form-control" style="width:500px;" >
+                                
+                             </select>
+                            </div>
+                            <label for="floatingInput">Select Type: </label>
+                            <div class="form-floating mb-3">
+                                <select name="txttype" id="txttype" class="form-control" style="width:500px;" >
+                                <option value="0">---Select Type---</option>
+                                <option value="Rentable">Rentable</option>
+                                <option value="Purchasable">Purchasable</option>
+                             </select>
+                            </div>
+                            
+                           
+                        <br>
+                            <div class="form-floating">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+<script src="{% static 'jquery-3.7.1.min.js' %}"></script>
+    <script>
+	$(document).ready(function()
+	{
+        $.ajaxSetup({
+		headers : {"X-CSRFToken" : '{{csrf_token}}'}
+		});
+		$("#categoryid").change(function()
+		{
+		var categoryid=$(this).val();
+		$.ajax({
+				type:"POST",
+				url : '{% url "fillsubcategory" %}',
+				data : {cid :categoryid},
+				dataType:"json",
+				success : function(data)
+				{
+				$('#subcategory').empty();
+                var row = "<option>Select Subcategory</option>";
+                $('#subcategory').append(row);
+
+                    // Populate table with new data
+                    $.each(data,function(key,val) {
+                    var row = "<option value='"+val.subcategory_id+"'>"+val.subcategory_name+"</option>";
+					$('#subcategory').append(row);
+                    });
+                 }
+                 });
+		});
+	});
+</script>
+
+{% include 'Seller/Footer.html' %} 
+
+
+
+

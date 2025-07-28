@@ -1,0 +1,79 @@
+{% load static %}
+{% include 'Seller/Header.html' %}
+
+<br><br><br><br>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4> Request View </h4>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="add-row" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tools Name</th>
+                            <th>Tools img</th>
+                            <th>Buyer Name</th>
+                            <th>Tool Quantity</th>
+                            <th>Amount</th>
+                            <th>From date</th>
+                            <th>To date</th>
+                            <th style="width: 15%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in requestV %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ r.request_toolid.tool_name }}</td>
+                            <td><img src="/Images/{{ r.request_toolid.tool_photo }}" style="width: 100px; height: 60px;"></td>
+                            <td>{{ r.request_userid.user_name }}</td>
+                            <td>{{ r.request_quantity }}</td>
+                            <td>{{ r.request_tprice }}</td>
+                            <td>{{ r.request_requireddate }}</td>
+                            <td>{{ r.request_returndate }}</td>
+                            <td>
+                                <a href="{% url 'acceptRequest_process' r.request_id %}" class="btn btn-success btn-sm">Accept</a>
+                                <button class="btn btn-danger btn-sm" onclick="openPopup('popup-{{ r.request_id }}')">Reject</button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Popup for rejection -->
+                        <div class="popup" id="popup-{{ r.request_id }}" style="display:none;">
+                            <div class="popup-content">
+                                <form action="{% url 'rejectRequest_process' r.request_id %}" method="POST">
+                                    {% csrf_token %}
+                                    <label for="Remark">Remark:</label>
+                                    <input type="text" id="Remark" name="Remark" class="form-control" required>
+                                    <input type="hidden" name="Bookingrequest_id" value="{{ r.request_id }}">
+                                    <br>
+                                    <br>
+                                    <center>
+                                    <button type="submit" class="btn btn-danger">Submit</button>
+                                    <a class="close-button" href="javascript:void(0)" onclick="closePopup('popup-{{ r.request_id }}')">Cancle</a>
+                                    </center>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openPopup(id) {
+        document.getElementById(id).style.display = 'block';
+    }
+    function closePopup(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+</script>
+
+{% include 'Seller/Footer.html' %}

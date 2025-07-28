@@ -1,0 +1,71 @@
+{% load static %}
+
+{% include 'Seller/Header.html' %}
+
+<br><br><br><br>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <div>
+                    <h4> PIECHART </h4>
+                </div>
+            </div>
+            <div class="container-fluid py-3 text-center">
+
+
+
+
+
+            </div>
+            <div class="card-body">
+                <div id="container" style="width: 75%;">
+                    <canvas id="pie-chart"></canvas>
+                </div>
+                <!-- {% if data and labels %}
+                <p>Data: {{ data }}</p>
+                <p>Labels: {{ labels }}</p>
+                {% else %}
+                <p>No data available.</p>
+                {% endif %} -->
+
+                <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var data = {{ data|safe }};
+                        var labels = {{ labels|safe }};
+                
+                        if (!data.length || !labels.length) {
+                            console.log("No data available for the chart.");
+                            return;
+                        }
+                
+                        var ctx = document.getElementById('pie-chart').getContext('2d');
+                        new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    data: data,
+                                    backgroundColor: ['red', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'],
+                                    label: 'Tool Requests'
+                                }]
+                            },
+                            options: {
+                                responsive: true
+                            }
+                        });
+                    });
+                </script>
+                
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+    {% include 'Seller/Footer.html' %}
